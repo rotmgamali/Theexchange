@@ -63,6 +63,10 @@ export default function RootLayout() {
                         <Stack.Screen name="bounty-feed" />
                         <Stack.Screen name="transactions" />
                         <Stack.Screen name="wallet" />
+                        <Stack.Screen name="settings" />
+                        <Stack.Screen name="privacy" />
+                        <Stack.Screen name="terms" />
+                        <Stack.Screen name="help" />
                     </Stack>
                 </PaperProvider>
             </AuthWrapper>
