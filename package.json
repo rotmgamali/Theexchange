@@ -8,7 +8,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "build": "expo export -p web",
-    "serve": "npx serve dist"
+    "serve": "npx serve -s dist"
   },
   "dependencies": {
     "@privy-io/expo": "^0.63.0",

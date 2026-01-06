@@ -1,3 +1,4 @@
+console.log('[index.tsx] Script execution started');
 import React, { useEffect } from 'react';
 import { View, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
 import { Text, Button, Avatar } from 'react-native-paper';
@@ -9,6 +10,7 @@ import { theme } from '../src/theme/colors';
 import { profileService } from '../src/services/profiles';
 
 export default function LoginScreen() {
+    console.log('[index.tsx] Rendering LoginScreen');
     const router = useRouter();
     const { login, ready, authenticated, user } = usePrivy();
 

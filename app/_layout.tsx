@@ -2,40 +2,53 @@ import '../src/utils/polyfills';
 import { Stack } from 'expo-router';
 import { PaperProvider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { PrivyProvider } from '@privy-io/expo';
 import { theme } from '../src/theme';
-import { PRIVY_CONFIG } from '../src/services/privy';
 import { Platform } from 'react-native';
+import React from 'react';
 
-// Standard font loading for Material Icons on Web
-if (Platform.OS === 'web') {
-    const style = document.createElement('style');
-    style.textContent = `
-    @font-face {
-      font-family: 'MaterialCommunityIcons';
-      src: url(${require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf')}) format('truetype');
+// Conditionally import Privy only on native platforms
+let PrivyProvider: React.ComponentType<any> | null = null;
+let PRIVY_CONFIG: { appId: string } | null = null;
+
+if (Platform.OS !== 'web') {
+    // Dynamic import for native only
+    const privyModule = require('@privy-io/expo');
+    const privyConfig = require('../src/services/privy');
+    PrivyProvider = privyModule.PrivyProvider;
+    PRIVY_CONFIG = privyConfig.PRIVY_CONFIG;
+}
+
+// Simple wrapper for web that provides a mock context
+function AuthWrapper({ children }: { children: React.ReactNode }) {
+    if (Platform.OS === 'web' || !PrivyProvider || !PRIVY_CONFIG) {
+        // On web, skip Privy entirely
+        return <>{children}</>;
     }
-  `;
-    document.head.appendChild(style);
+
+    return (
+        <PrivyProvider
+            appId={PRIVY_CONFIG.appId}
+            config={{
+                loginMethods: ['email', 'google', 'apple'],
+                appearance: {
+                    theme: 'dark' as 'dark',
+                    accentColor: '#22D3EE',
+                    showPrivyLogo: false,
+                },
+                embeddedWallets: {
+                    createOnLogin: 'users-without-wallets',
+                },
+            }}
+        >
+            {children}
+        </PrivyProvider>
+    );
 }
 
 export default function RootLayout() {
     return (
         <SafeAreaProvider>
-            <PrivyProvider
-                appId={PRIVY_CONFIG.appId}
-                config={{
-                    loginMethods: ['email', 'google', 'apple'],
-                    appearance: {
-                        theme: 'dark' as 'dark',
-                        accentColor: '#22D3EE',
-                        showPrivyLogo: false,
-                    },
-                    embeddedWallets: {
-                        createOnLogin: 'users-without-wallets',
-                    },
-                }}
-            >
+            <AuthWrapper>
                 <PaperProvider theme={theme}>
                     <Stack
                         screenOptions={{
@@ -52,7 +65,7 @@ export default function RootLayout() {
                         <Stack.Screen name="wallet" />
                     </Stack>
                 </PaperProvider>
-            </PrivyProvider>
+            </AuthWrapper>
         </SafeAreaProvider>
     );
 }
