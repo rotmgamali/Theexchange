@@ -1,0 +1,19 @@
+
+> the-exchange@1.0.0 build
+> expo export -p web
+
+Starting Metro Bundler
+Web Bundling failed 563ms node_modules/expo-router/entry.js (1 module)
+SyntaxError: node_modules/expo-router/entry.js: [BABEL] /Users/mac/Desktop/FOF/The Exchange/node_modules/expo-router/entry.js: Cannot find module 'react-native-worklets/plugin'
+Require stack:
+- /Users/mac/Desktop/FOF/The Exchange/node_modules/react-native-reanimated/plugin/index.js
+- /Users/mac/Desktop/FOF/The Exchange/node_modules/babel-preset-expo/build/index.js
+- /Users/mac/Desktop/FOF/The Exchange/node_modules/@babel/core/lib/config/files/module-types.js
+- /Users/mac/Desktop/FOF/The Exchange/node_modules/@babel/core/lib/config/files/configuration.js
+- /Users/mac/Desktop/FOF/The Exchange/node_modules/@babel/core/lib/config/files/index.js
+- /Users/mac/Desktop/FOF/The Exchange/node_modules/@babel/core/lib/index.js
+- /Users/mac/Desktop/FOF/The Exchange/node_modules/expo/node_modules/@expo/metro-config/build/transform-worker/metro-transform-worker.js
+- /Users/mac/Desktop/FOF/The Exchange/node_modules/expo/node_modules/@expo/metro-config/build/transform-worker/transform-worker.js
+- /Users/mac/Desktop/FOF/The Exchange/node_modules/metro/src/DeltaBundler/Worker.flow.js
+- /Users/mac/Desktop/FOF/The Exchange/node_modules/metro/src/DeltaBundler/Worker.js
+- /Users/mac/Desktop/FOF/The Exchange/node_modules/jest-worker/build/workers/processChild.js (While processing: "/Users/mac/Desktop/FOF/The Exchange/node_modules/babel-preset-expo/build/index.js")

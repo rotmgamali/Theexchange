@@ -5,6 +5,19 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { PrivyProvider } from '@privy-io/expo';
 import { theme } from '../src/theme';
 import { PRIVY_CONFIG } from '../src/services/privy';
+import { Platform } from 'react-native';
+
+// Standard font loading for Material Icons on Web
+if (Platform.OS === 'web') {
+    const style = document.createElement('style');
+    style.textContent = `
+    @font-face {
+      font-family: 'MaterialCommunityIcons';
+      src: url(${require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf')}) format('truetype');
+    }
+  `;
+    document.head.appendChild(style);
+}
 
 export default function RootLayout() {
     return (
