@@ -1,4 +1,3 @@
-```typescript
 import '../src/utils/polyfills';
 import { Stack } from 'expo-router';
 import { PaperProvider } from 'react-native-paper';
@@ -37,11 +36,10 @@ export default function RootLayout() {
                         <Stack.Screen name="request-service" />
                         <Stack.Screen name="bounty-feed" />
                         <Stack.Screen name="transactions" />
-          <Stack.Screen name="wallet" />
+                        <Stack.Screen name="wallet" />
                     </Stack>
                 </PaperProvider>
             </PrivyProvider>
         </SafeAreaProvider>
     );
 }
-```
