@@ -4,14 +4,14 @@ import { Text, Card, Avatar, Button, IconButton, List, Divider, ActivityIndicato
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Wallet, Copy, ExternalLink, ArrowUpRight, ShieldCheck, History } from 'lucide-react-native';
-import { usePrivy } from '@privy-io/expo';
+import { usePrivySafe } from '../src/hooks/usePrivySafe';
 import { theme } from '../src/theme/colors';
 import { solanaService } from '../src/services/solana';
 import { profileService } from '../src/services/profiles';
 
 export default function WalletScreen() {
     const router = useRouter();
-    const { user, authenticated } = usePrivy();
+    const { user, authenticated } = usePrivySafe();
     const [loading, setLoading] = useState(true);
     const [usdcBalance, setUsdcBalance] = useState(0);
     const [excBalance, setExcBalance] = useState(0);

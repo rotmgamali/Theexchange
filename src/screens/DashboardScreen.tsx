@@ -4,7 +4,7 @@ import { Text, Searchbar, Avatar, Card, IconButton, FAB, Portal, Button } from '
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Palette, Code, Hammer, PenTool, Megaphone, Users, Star, Plus, RefreshCcw } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
-import { usePrivy } from '@privy-io/expo';
+import { usePrivySafe } from '../hooks/usePrivySafe';
 import { theme } from '../theme/colors';
 import { marketplaceService } from '../services/marketplace';
 import { profileService } from '../services/profiles';
@@ -44,7 +44,7 @@ const FEATURED_PROVIDERS = [
 
 export const DashboardScreen = () => {
     const router = useRouter();
-    const { user, authenticated } = usePrivy();
+    const { user, authenticated } = usePrivySafe();
     const [state, setState] = React.useState({ open: false });
     const [loading, setLoading] = React.useState(true);
     const [services, setServices] = React.useState<any[]>([]);

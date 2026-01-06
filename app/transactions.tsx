@@ -5,13 +5,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Clock, CheckCircle, AlertTriangle, XCircle } from 'lucide-react-native';
 import { theme } from '../src/theme/colors';
-import { usePrivy } from '@privy-io/expo';
+import { usePrivySafe } from '../src/hooks/usePrivySafe';
 import { transactionService } from '../src/services/transactions';
 import { supabase } from '../src/services/supabase';
 
 export default function TransactionsScreen() {
     const router = useRouter();
-    const { user, authenticated } = usePrivy();
+    const { user, authenticated } = usePrivySafe();
     const [filter, setFilter] = useState('all');
     const [loading, setLoading] = useState(true);
     const [transactions, setTransactions] = useState<any[]>([]);

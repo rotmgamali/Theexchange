@@ -3,7 +3,7 @@ import { View, StyleSheet, ScrollView, Switch } from 'react-native';
 import { Text, TextInput, Button, IconButton } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { usePrivy } from '@privy-io/expo';
+import { usePrivySafe } from '../src/hooks/usePrivySafe';
 import { theme } from '../src/theme/colors';
 import { marketplaceService } from '../src/services/marketplace';
 
@@ -11,7 +11,7 @@ const CATEGORIES = ['Design', 'Coding', 'Local Help', 'Writing', 'Marketing', 'C
 
 export default function CreateServiceScreen() {
     const router = useRouter();
-    const { user, authenticated } = usePrivy();
+    const { user, authenticated } = usePrivySafe();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');

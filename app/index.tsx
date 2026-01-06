@@ -1,44 +1,49 @@
-console.log('[index.tsx] Script execution started');
-import React, { useEffect } from 'react';
-import { View, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { View, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import { Text, Button, Avatar } from 'react-native-paper';
-import { LogIn, Github, Mail, Smartphone } from 'lucide-react-native';
+import { Mail } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { usePrivy } from '@privy-io/expo';
 import { theme } from '../src/theme/colors';
-import { profileService } from '../src/services/profiles';
+
+// Only import Privy on native platforms
+let usePrivy: any = null;
+if (Platform.OS !== 'web') {
+    try {
+        usePrivy = require('@privy-io/expo').usePrivy;
+    } catch (e) {
+        console.log('Privy not available');
+    }
+}
 
 export default function LoginScreen() {
-    console.log('[index.tsx] Rendering LoginScreen');
     const router = useRouter();
-    const { login, ready, authenticated, user } = usePrivy();
 
-    useEffect(() => {
-        const syncUser = async () => {
-            if (ready && authenticated && user) {
-                try {
-                    await profileService.syncProfile(
-                        user.id,
-                        user.email?.address,
-                        user.email?.address?.split('@')[0],
-                        undefined
-                    );
-                    router.replace('/dashboard');
-                } catch (err) {
-                    console.error('Profile sync failed:', err);
-                }
-            }
-        };
-        syncUser();
-    }, [ready, authenticated, user]);
+    // Use Privy only on native
+    let privyState = { login: null as any, ready: true, authenticated: false, user: null };
+    if (Platform.OS !== 'web' && usePrivy) {
+        try {
+            privyState = usePrivy();
+        } catch (e) {
+            console.log('Privy hook error:', e);
+        }
+    }
 
     const handleLogin = async () => {
-        try {
-            await login();
-        } catch (err) {
-            console.error('Login failed:', err);
+        if (Platform.OS === 'web') {
+            // On web, go directly to dashboard
+            router.replace('/dashboard');
+        } else if (privyState.login) {
+            try {
+                await privyState.login();
+            } catch (err) {
+                console.error('Login failed:', err);
+            }
         }
+    };
+
+    const handleSkip = () => {
+        router.replace('/dashboard');
     };
 
     return (
@@ -60,25 +65,34 @@ export default function LoginScreen() {
                         style={styles.loginButton}
                         contentStyle={styles.buttonContent}
                         icon={() => <Mail size={20} color={theme.colors.background} />}
-                        disabled={!ready}
                     >
-                        Continue with Email
+                        {Platform.OS === 'web' ? 'Enter App' : 'Continue with Email'}
                     </Button>
 
-                    <View style={styles.divider}>
-                        <View style={styles.line} />
-                        <Text style={styles.dividerText}>OR</Text>
-                        <View style={styles.line} />
-                    </View>
+                    {Platform.OS === 'web' && (
+                        <Text style={styles.webNote}>
+                            Web Preview Mode - Full auth on mobile app
+                        </Text>
+                    )}
 
-                    <View style={styles.socialRow}>
-                        <TouchableOpacity style={styles.socialButton} onPress={handleLogin} disabled={!ready}>
-                            <Avatar.Icon size={40} icon="google" color="#DB4437" style={styles.socialIcon} />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.socialButton} onPress={handleLogin} disabled={!ready}>
-                            <Avatar.Icon size={40} icon="apple" color="#FFFFFF" style={styles.socialIcon} />
-                        </TouchableOpacity>
-                    </View>
+                    {Platform.OS !== 'web' && (
+                        <>
+                            <View style={styles.divider}>
+                                <View style={styles.line} />
+                                <Text style={styles.dividerText}>OR</Text>
+                                <View style={styles.line} />
+                            </View>
+
+                            <View style={styles.socialRow}>
+                                <TouchableOpacity style={styles.socialButton} onPress={handleLogin}>
+                                    <Avatar.Icon size={40} icon="google" color="#DB4437" style={styles.socialIcon} />
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.socialButton} onPress={handleLogin}>
+                                    <Avatar.Icon size={40} icon="apple" color="#FFFFFF" style={styles.socialIcon} />
+                                </TouchableOpacity>
+                            </View>
+                        </>
+                    )}
 
                     <View style={styles.footer}>
                         <Text style={styles.footerText}>
@@ -126,14 +140,45 @@ const styles = StyleSheet.create({
         marginBottom: 30,
         fontWeight: 'bold',
     },
-    authButton: {
-        marginBottom: 15,
+    loginButton: {
         borderRadius: 12,
-        borderWidth: 1,
-        borderColor: 'rgba(255,255,255,0.1)',
+        backgroundColor: theme.colors.primary,
     },
     buttonContent: {
         height: 55,
+    },
+    webNote: {
+        color: theme.colors.textSecondary,
+        textAlign: 'center',
+        marginTop: 15,
+        fontSize: 12,
+        opacity: 0.7,
+    },
+    divider: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 25,
+    },
+    line: {
+        flex: 1,
+        height: 1,
+        backgroundColor: 'rgba(255,255,255,0.1)',
+    },
+    dividerText: {
+        color: theme.colors.textSecondary,
+        marginHorizontal: 15,
+        fontSize: 12,
+    },
+    socialRow: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        gap: 20,
+    },
+    socialButton: {
+        padding: 5,
+    },
+    socialIcon: {
+        backgroundColor: 'rgba(255,255,255,0.05)',
     },
     footer: {
         marginTop: 20,
